@@ -693,8 +693,3 @@ footer {
 
   margin-top: 15px;
 }
-
-.search input:focus {
-  outline: none;
-  border: 2px solid lightskyblue;
-}

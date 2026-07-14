@@ -40,6 +40,22 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   updateFloatingCart();
+
+  const searchBox = document.getElementById("search-box");
+  if (searchBox) {
+    searchBox.addEventListener("keyup", function () {
+      const searchValue = searchBox.value.toLowerCase();
+      const products = document.querySelectorAll(".product-item");
+      products.forEach(function (product) {
+        const productName = product.querySelector("h3").innerText.toLowerCase();
+        if (productName.includes(searchValue)) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+    });
+  }
 });
 
 function createQuantityBox(card, quantity) {
@@ -52,7 +68,7 @@ function createQuantityBox(card, quantity) {
     quantityBox.remove();
   }
   quantityBox = document.createElement("div");
-  quantityBox.className = "quanity-box";
+  quantityBox.className = "quantity-box";
   quantityBox.innerHTML = `
   <button class="minus-btn">-</button>
   <span>${quantity}</span>

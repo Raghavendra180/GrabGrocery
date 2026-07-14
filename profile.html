@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <nav>
+
+        <div class="logo">
+            <h2>GrabGrocery</h2>
+        </div>
+
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="product.html">Products</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="orders.html">My Orders</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+
+    </nav>
+</header>
+
+<div class="profile-container">
+
+    <div class="profile-card">
+
+        <h2>My Profile</h2>
+
+        <p>
+            <strong>Username:</strong>
+            <span id="profile-name"></span>
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            <span id="profile-email"></span>
+        </p>
+
+        <p>
+            <strong>Total Orders:</strong>
+            <span id="total-orders"></span>
+        </p>
+
+        <button id="logout-profile">
+            Logout
+        </button>
+
+    </div>
+
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/profile.js"></script>
+
+</body>
+</html>

@@ -144,16 +144,34 @@ document.addEventListener("DOMContentLoaded", function () {
   checkoutButton.addEventListener("click", function () {
     if (cart.length === 0) {
       alert("Your cart is empty.");
-
       return;
     }
 
-    alert("Order placed successfully!");
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    let total = 0;
+
+    cart.forEach(function (item) {
+      total += parseInt(item.price) * item.quantity;
+    });
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    orders.push({
+      email: loggedInUser.email,
+      date: new Date().toLocaleString(),
+      total: total,
+      items: [...cart],
+    });
+
+    localStorage.setItem("orders", JSON.stringify(orders));
 
     localStorage.removeItem("cart");
 
     cart = [];
 
-    displayCart();
+    alert("Order placed successfully!");
+
+    window.location.href = "orders.html";
   });
 });
