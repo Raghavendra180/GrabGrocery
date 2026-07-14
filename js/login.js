@@ -1,29 +1,36 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("login-form");
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim().toLowerCase();
-
     const password = document.getElementById("password").value;
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const user = users.find(function (item) {
-      return item.email === email && item.password === password;
+    const response = await fetch("/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     });
 
-    if (!user) {
-      alert("Invalid Email or Password");
+    const data = await response.json();
 
-      return;
+    alert(data.message);
+
+    if (response.ok) {
+      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+
+      if (data.user.role === "seller") {
+        window.location.href = "seller-orders.html";
+      } else {
+        window.location.href = "index.html";
+      }
     }
-
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-
-    alert("Login Successful!");
-
-    window.location.href = "index.html";
   });
 });

@@ -1,34 +1,59 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const container = document.getElementById("orders-container");
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
-  const userOrders = allOrders.filter(
-    (order) => order.email === loggedInUser.email,
-  );
-  if (userOrders.length === 0) {
-    container.innerHTML = "<h2> No Orders Yet</h2>";
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "login.html";
     return;
   }
-  userOrders.reverse();
-  userOrders.forEach((order, index) => {
-    let products = "";
-    order.items.forEach((items) => {
-      products += `
-            <p>
-            ${items.name}
-            x
-            ${items.quantity}
-            </p>
-            `;
+
+  try {
+    const response = await fetch("/api/orders/my", {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    container.innerHTML += `
+
+    const orders = await response.json();
+
+    if (!response.ok) {
+      alert(orders.message);
+      return;
+    }
+
+    if (orders.length === 0) {
+      container.innerHTML = "<h2>No Orders Yet</h2>";
+      return;
+    }
+
+    orders.forEach((order, index) => {
+      let products = "";
+      order.items.forEach((item) => {
+        products += `<p>${item.name} x ${item.quantity}</p>`;
+      });
+
+      const dateStr = new Date(order.date).toLocaleString();
+
+      const addressHtml = order.address
+        ? `
+          <p><strong>Delivering to:</strong> ${order.address.fullName}, ${order.address.street}, ${order.address.city} - ${order.address.pincode}</p>
+          <p><strong>Phone:</strong> ${order.address.phone}</p>
+          `
+        : `<p><strong>Delivering to:</strong> No address on file (old order)</p>`;
+
+      container.innerHTML += `
         <div class="order-card">
-        <h2>Order #${userOrders.length - index}</h2>
-        <p><strong>Date :</strong> ${order.date}</p>
-        <hr>
-        ${products}
-        <hr>
-        <h3>Total : ${order.total}</h3>
+          <h2>Order #${orders.length - index}</h2>
+          <p><strong>Status:</strong> <span class="status-badge">${order.status}</span></p>
+          <p><strong>Date:</strong> ${dateStr}</p>
+          <hr>
+          ${products}
+          <hr>
+          ${addressHtml}
+          <hr>
+          <h3>Total: ${order.total}</h3>
         </div>`;
-  });
+    });
+  } catch (error) {
+    console.log(error);
+    container.innerHTML = "<h2>Could not load orders.</h2>";
+  }
 });

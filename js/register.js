@@ -1,45 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("register-form");
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const username = document.getElementById("username").value.trim();
-
     const email = document.getElementById("email").value.trim().toLowerCase();
-
     const password = document.getElementById("password").value;
 
-    if (username === "" || email === "" || password === "") {
-      alert("Please fill all fields.");
-
-      return;
-    }
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const existingUser = users.find(function (user) {
-      return user.email === email;
+    const response = await fetch("/api/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
     });
 
-    if (existingUser) {
-      alert("Email already registered.");
+    const data = await response.json();
 
-      return;
+    alert(data.message);
+
+    if (response.ok) {
+      window.location.href = "login.html";
     }
-
-    users.push({
-      username: username,
-
-      email: email,
-
-      password: password,
-    });
-
-    localStorage.setItem("users", JSON.stringify(users));
-
-    alert("Registration Successful!");
-
-    window.location.href = "login.html";
   });
 });

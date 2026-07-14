@@ -17,7 +17,7 @@
           <li><a href="product.html">Products</a></li>
           <li><a href="cart.html">Cart</a></li>
           <li><a href="orders.html">My Orders</a></li>
-<li><a href="login.html">Login</a></li>
+          <li><a href="login.html">Login</a></li>
         </ul>
       </nav>
     </header>
@@ -37,8 +37,22 @@
           <!-- Cart items will be dynamically added here -->
         </tbody>
       </table>
+
+      <div class="address-box">
+        <h3>Delivery Address</h3>
+
+        <input type="text" id="address-name" placeholder="Full Name" />
+        <input type="text" id="address-phone" placeholder="Phone Number" />
+        <input type="text" id="address-street" placeholder="Street / House No." />
+        <input type="text" id="address-city" placeholder="City" />
+        <input type="text" id="address-pincode" placeholder="Pincode" />
+
+        <button type="button" id="use-location-btn">📍 Use My Current Location</button>
+        <p id="location-status"></p>
+      </div>
+
       <div class="cart-summary">
-        <p>Total: $<span id="cart-total">0.00</span></p>
+        <p>Total: ₹<span id="cart-total">0.00</span></p>
         <button id="checkout-button">Checkout</button>
       </div>
     </div>

@@ -1,31 +1,51 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+document.addEventListener("DOMContentLoaded", async function () {
+  const token = localStorage.getItem("token");
 
-  if (!user) {
+  if (!token) {
     window.location.href = "login.html";
-
     return;
   }
 
-  document.getElementById("profile-name").innerText = user.username;
+  try {
+    const response = await fetch("/api/users/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  document.getElementById("profile-email").innerText = user.email;
+    const user = await response.json();
 
-  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    if (!response.ok) {
+      alert(user.message);
+      localStorage.removeItem("token");
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+      return;
+    }
 
-  const myOrders = orders.filter(function (order) {
-    return order.email === user.email;
-  });
+    document.getElementById("profile-name").innerText = user.username;
+    document.getElementById("profile-email").innerText = user.email;
 
-  document.getElementById("total-orders").innerText = myOrders.length;
+    const ordersResponse = await fetch("/api/orders/my", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const orders = await ordersResponse.json();
+
+    document.getElementById("total-orders").innerText = Array.isArray(orders)
+      ? orders.length
+      : 0;
+  } catch (error) {
+    console.log(error);
+  }
 
   document
     .getElementById("logout-profile")
     .addEventListener("click", function () {
+      localStorage.removeItem("token");
       localStorage.removeItem("loggedInUser");
-
       alert("Logged Out Successfully");
-
       window.location.href = "login.html";
     });
 });
